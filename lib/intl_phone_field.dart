@@ -254,10 +254,10 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                             .toLowerCase()
                             .contains(value.toLowerCase()))
                         .toList();
-                    if (this.mounted) setState(() {});
+                    if (mounted) setState(() {});
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -268,15 +268,15 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                           leading: Image.asset(
                             'assets/flags/${filteredCountries[index]['code']!.toLowerCase()}.png',
                             package: 'intl_phone_field',
-                            width: 32,
+                            width: 34,
                           ),
                           title: Text(
                             filteredCountries[index]['name']!,
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
                           trailing: Text(
                             '+${filteredCountries[index]['dial_code']}',
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
                           onTap: () {
                             _selectedCountry = filteredCountries[index];
@@ -295,7 +295,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        Divider(thickness: 1),
+                        const Divider(thickness: 0.8),
                       ],
                     ),
                   ),
@@ -306,7 +306,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         ),
       ),
     );
-    if (this.mounted) setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -314,7 +314,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
     return Row(
       children: <Widget>[
         _buildFlagsButton(),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Expanded(
           child: TextFormField(
             initialValue: widget.initialValue,
@@ -335,7 +335,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
             ),
             style: widget.style,
             onSaved: (value) {
-              if (widget.onSaved != null)
+              if (widget.onSaved != null) {
                 widget.onSaved!(
                   PhoneNumber(
                     countryISOCode: _selectedCountry['code'],
@@ -343,9 +343,10 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                     number: value,
                   ),
                 );
+              }
             },
             onChanged: (value) {
-              if (widget.onChanged != null)
+              if (widget.onChanged != null) {
                 widget.onChanged!(
                   PhoneNumber(
                     countryISOCode: _selectedCountry['code'],
@@ -353,6 +354,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
                     number: value,
                   ),
                 );
+              }
             },
             validator: validator,
             maxLength: _selectedCountry['max_length'],
@@ -376,39 +378,42 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
         borderRadius: widget.dropdownDecoration.borderRadius as BorderRadius?,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              if (widget.enabled &&
-                  widget.showDropdownIcon &&
-                  widget.iconPosition == IconPosition.leading) ...[
-                widget.dropDownIcon,
-                SizedBox(width: 4)
-              ],
-              if (widget.showCountryFlag) ...[
-                Image.asset(
-                  'assets/flags/${_selectedCountry['code']!.toLowerCase()}.png',
-                  package: 'intl_phone_field',
-                  width: 32,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 23),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (widget.enabled &&
+                    widget.showDropdownIcon &&
+                    widget.iconPosition == IconPosition.leading) ...[
+                  widget.dropDownIcon,
+                  // const SizedBox(width: 4)
+                ],
+                if (widget.showCountryFlag) ...[
+                  Image.asset(
+                    'assets/flags/${_selectedCountry['code']!.toLowerCase()}.png',
+                    package: 'intl_phone_field',
+                    width: 38,
+                  ),
+                  const SizedBox(width: 8)
+                ],
+                FittedBox(
+                  child: Text(
+                    '+${_selectedCountry['dial_code']}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                        color: widget.countryCodeTextColor),
+                  ),
                 ),
-                SizedBox(width: 8)
+                if (widget.enabled &&
+                    widget.showDropdownIcon &&
+                    widget.iconPosition == IconPosition.trailing) ...[
+                  widget.dropDownIcon,
+                  // const SizedBox(width: 4)
+                ],
               ],
-              FittedBox(
-                child: Text(
-                  '+${_selectedCountry['dial_code']}',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: widget.countryCodeTextColor),
-                ),
-              ),
-              SizedBox(width: 8),
-              if (widget.enabled &&
-                  widget.showDropdownIcon &&
-                  widget.iconPosition == IconPosition.trailing) ...[
-                widget.dropDownIcon,
-                SizedBox(width: 4)
-              ],
-            ],
+            ),
           ),
         ),
         onTap: widget.enabled ? _changeCountry : null,
